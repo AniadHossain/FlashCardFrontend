@@ -1,0 +1,126 @@
+int ReturnValue(size_t row, size_t col)
+{
+//    return board[row][col].data;
+    SetSolverSquareSet square = board[row][col];
+    if(square.set.size() == 1){
+        if(square.isBlack){
+            return square.set[0] * -1;
+        }
+        return square.set[0];
+    }
+    else{
+        return 99;
+    }
+}
+    
+void Solve()
+{
+    backTrack(board, 0, 0);
+    for(int i = 0; i < boardSize; i++){
+        for(int j = 0; j < boardSize; j++){
+            std::cout << board[i][j].set[0] << " ";
+        }
+        std::cout << "\n";
+    }
+}
+
+bool backTrack(vector<vector<SetSolverSquareSet>>copyBoard, int row, int col){
+    if(row == boardSize && col == boardSize){
+        board = copyBoard;
+        return true;
+    }
+    if(row == boardSize){
+        return backTrack(copyBoard, 0, col + 1);
+    }
+    if(col == boardSize){
+        return backTrack(copyBoard, row + 1, 0);
+    }
+    if(copyBoard[row][col].set.empty()){
+        return false;
+    }
+    if(copyBoard[row][col].set.size() == 1){
+        updateSetValues(copyBoard, row, col);
+        return backTrack(copyBoard, row, col + 1);
+    }
+
+    updateSetValueForTheComponents(copyBoard, row, col);
+    for(int i = 0; i < copyBoard[row][col].set.size(); i++){
+        vector<vector<SetSolverSquareSet>>copyBoard2 = copyBoard;
+        copyBoard2[row][col].RemoveAllExceptValue(copyBoard[row][col].set[i]);
+        updateSetValues(copyBoard2, row, col);
+        if(backTrack(copyBoard2, row, col + 1)){
+            board = copyBoard2;
+            return true;
+        }
+    }
+    return false;
+
+}
+
+void updateSetValueForTheComponents(vector<vector<SetSolverSquareSet>>& copyBoard, int row, int col){
+    int value = copyBoard[row][col].set[0];
+    if(value < 0){
+        value = value * -1;
+    }
+    int min = value;
+    int max = value;
+    int size = 1;
+    int i = col + 1;
+    while(!copyBoard[row][i].isBlack && i < boardSize){
+        if(copyBoard[row][i].set.size() == 1){
+            if(copyBoard[row][i].set[0] < min){
+                min = copyBoard[row][i].set[0];
+            }
+            if(copyBoard[row][i].set[0] > max){
+                max = copyBoard[row][i].set[0];
+            }
+        }
+        size++;
+        i++;
+    }
+    i = col - 1;
+    while(!copyBoard[row][i].isBlack && i >= 0){
+        if(copyBoard[row][i].set.size() == 1){
+            if(copyBoard[row][i].set[0] < min){
+                min = copyBoard[row][i].set[0];
+            }
+            if(copyBoard[row][i].set[0] > max){
+                max = copyBoard[row][i].set[0];
+            }
+        }
+        size++;
+        i--;
+    }
+
+    copyBoard[row][col].RemoveIfNotInRange(std::min(max-size,min+size),std::max(max-size,min+size));
+    min = value;
+    max = value;
+    size = 1;
+    i = row + 1;
+    while(!copyBoard[i][col].isBlack && i < boardSize){
+        if(copyBoard[i][col].set.size() == 1){
+            if(copyBoard[i][col].set[0] < min){
+                min = copyBoard[i][col].set[0];
+            }
+            if(copyBoard[i][col].set[0] > max){
+                max = copyBoard[i][col].set[0];
+            }
+        }
+        size++;
+        i++;
+    }
+    i = row - 1;
+    while(!copyBoard[i][col].isBlack && i >= 0){
+        if(copyBoard[i][col].set.size() == 1){
+            if(copyBoard[i][col].set[0] < min){
+                min = copyBoard[i][col].set[0];
+            }
+            if(copyBoard[i][col].set[0] > max){
+                max = copyBoard[i][col].set[0];
+            }
+        }
+        size++;
+        i--;
+    }
+    copyBoard[row][col].RemoveIfNotInRange(std::min(max-size,min+size),std::max(max-size,min+size));
+}
