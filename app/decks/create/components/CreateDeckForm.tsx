@@ -2,17 +2,11 @@
 
 import Button from "@/app/components/Button";
 import InputField from "@/app/components/inputs/InputField";
-import { use, useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form"; 
-import { convertToObject } from "typescript";
 import {toast} from "react-hot-toast"
-import {getSession, signIn, useSession} from "next-auth/react"
+import { useSession } from "next-auth/react"
 import { useRouter } from "next/navigation";
-import getCurrentUser from "@/app/actions/getCurrentUser";
-import TextAreaField from "@/app/components/inputs/TextAreaField";
-import { headers } from "next/dist/client/components/headers";
-import createFlashcard from "@/app/actions/createFlashcard";
-import getDecks from "@/app/actions/getDecks";
 import useAxiosAuth from "@/app/api/hooks/useAxiosAuth";
 
 
@@ -42,18 +36,21 @@ const CreateDeckForm = () => {
     
         axiosAuth.post("api/v1/deck/create/"+user?.id,data)
         .then((response)=>{
+            console.log(response?.status)
             if(response?.status === 200){
                 toast.success("Deck created")
                 router.refresh()
                 router.push("/decks")
             }
-            else{
-                toast.error("Error creating Deck")
-            }
         })
         .catch((error)=>{
-            console.log(error)
-            toast.error("Error creating flashcard")
+            console.log(error.response.status)
+            if(error.response.status === 401){
+                toast.error("Session expired")
+            }
+            else if(error.response.status === 400){
+                toast.error(error.response.data.message)
+            }
         
         })
         .finally(() => setLoading(false))

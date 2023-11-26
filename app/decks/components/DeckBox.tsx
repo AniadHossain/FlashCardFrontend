@@ -16,7 +16,8 @@ const DeckBox: React.FC<DeckBoxProps> = ({data}) => {
     const axiosAuth = useAxiosAuth()
     const [isLoading,setLoading ]= useState(false);
     const handleClick = useCallback(()=>{
-        router.push(`/flashcard/${data.id}`);
+        router.refresh()
+        router.push(`/flashcard/${data.id}`)
 
     },[data,router])
 

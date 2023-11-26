@@ -2,14 +2,14 @@ import Link from "next/link";
 
 import clsx from "clsx";
 
-interface MobileItemProps {
+interface SidebarItemProps {
   href: string;
   icon: any;
   active?: boolean;
   onClick?: () => void;
 }
 
-const MobileItem: React.FC<MobileItemProps> = ({ 
+const SidebarItem: React.FC<SidebarItemProps> = ({ 
   href, 
   icon: Icon, 
   active,
@@ -33,4 +33,4 @@ const MobileItem: React.FC<MobileItemProps> = ({
    );
 }
  
-export default MobileItem;
+export default SidebarItem;

@@ -4,7 +4,6 @@ import api from "@/app/api/axiosConfig";
 import { JWT } from "next-auth/jwt";
 
 async function refreshToken(token:JWT):Promise<JWT>{
-  console.log(token.tokens.refreshToken)
   const res = (await api.post("api/v1/auth/refresh-token",{},{headers:{Authorization:"Bearer " + token.tokens.refreshToken}})).data
  
   return {

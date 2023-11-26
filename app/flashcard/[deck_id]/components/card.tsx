@@ -29,9 +29,9 @@ const Card: React.FC<Card> = ({question,answer}) => {
             <div className="flex justify-center items-center text-2xl h-72 font-bold text-slate-400 shadow px-11 rounded-3xl bg-slate-800 overflow-y-scroll">
                     {variant === 'QUESTION' ? question : answer}
             </div>
-            <div className="py-1 mx-auto w-48 text-slate-400 bg-blue-800 hover:bg-blue-700 mt-2 text-center gap-2 rounded-lg cursor-pointer" onClick={toggleVariant}>
-                Flip
-            </div>
+            <button className="w-full py-5 text-slate-400 bg-gray-700 hover:bg-gray-600 mt-5 text-center gap-2 rounded-xl cursor-pointer" onClick={toggleVariant}>
+            {variant === 'QUESTION' ? "answer" : "question"}
+            </button>
         </div>
     )
 }

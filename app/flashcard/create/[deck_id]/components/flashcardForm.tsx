@@ -1,27 +1,24 @@
 'use client';
 
 import Button from "@/app/components/Button";
-import InputField from "@/app/components/inputs/InputField";
-import { use, useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form"; 
-import { convertToObject } from "typescript";
 import {toast} from "react-hot-toast"
-import {getSession, signIn, useSession} from "next-auth/react"
 import { useRouter } from "next/navigation";
-import getCurrentUser from "@/app/actions/getCurrentUser";
 import TextAreaField from "@/app/components/inputs/TextAreaField";
-import { headers } from "next/dist/client/components/headers";
-import createFlashcard from "@/app/actions/createFlashcard";
-import getDecks from "@/app/actions/getDecks";
 import useAxiosAuth from "@/app/api/hooks/useAxiosAuth";
+
+type variant = 'create' | 'update'
 
 interface FlashcardFormProps{
     deckId:string;
+    variant: variant;
 }
 
-const FlashcardForm: React.FC<FlashcardFormProps> = ({deckId}) => {
+const FlashcardForm: React.FC<FlashcardFormProps> = ({deckId,variant}) => {
     const [isLoading,setLoading] = useState(false)
     const axiosAuth = useAxiosAuth()
+    const router = useRouter()
 
     const {
         register,
@@ -40,24 +37,44 @@ const FlashcardForm: React.FC<FlashcardFormProps> = ({deckId}) => {
         setLoading(true);
         //re render page
         
-    
-        axiosAuth.post("api/v1/flashcard/create/"+deckId,data)
-        .then((response)=>{
-            if(response?.status === 200){
-                toast.success("Flashcard created")
-            }
-            else{
+        if(variant === 'create'){
+            axiosAuth.post(`api/v1/flashcard/${variant}/${deckId}`,data)
+            .then((response)=>{
+                if(response?.status === 200){
+                    toast.success("Flashcard created")
+                }
+                else{
+                    toast.error("Error creating flashcard")
+                }
+            })
+            .catch((error)=>{
+                console.log(error)
                 toast.error("Error creating flashcard")
-            }
-        })
-        .catch((error)=>{
-            console.log(error)
-            toast.error("Error creating flashcard")
+            
+            })
+            .finally(() => setLoading(false))
         
-        })
-        .finally(() => setLoading(false))
-        
-    };
+        }
+        else{
+            axiosAuth.put(`api/v1/flashcard/${variant}/${deckId}`,data)
+            .then((response)=>{
+                if(response?.status === 200){
+                    toast.success("Flashcard updated")
+                    router.refresh()
+                    router.back()
+                }
+                else{
+                    toast.error("Error updating flashcard")
+                }
+            })
+            .catch((error)=>{
+                console.log(error)
+                toast.error("Error updating flashcard")
+            
+            })
+            .finally(() => setLoading(false))
+        }
+    }
 
     return (
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-md ">
@@ -67,10 +84,15 @@ const FlashcardForm: React.FC<FlashcardFormProps> = ({deckId}) => {
                     <TextAreaField id="question" label="Question" register={register} errors={errors} disabled={isLoading} type="text-field"/>
                     <TextAreaField id="answer" label='Answer' register={register} errors={errors} disabled={isLoading} />
                     
-
-                    <div>
-                        <Button disabled={isLoading} fullWidth type="submit"> Create Flashcard</Button>
-                    </div>   
+                    {variant === 'create' ? 
+                        <div>
+                            <Button disabled={isLoading} fullWidth type="submit"> Create Flashcard</Button>
+                        </div>:
+                        <div>
+                            <Button disabled={isLoading} fullWidth type="submit"> Update Flashcard</Button>
+                        </div>
+                }
+                     
                 </form>
                 
                 

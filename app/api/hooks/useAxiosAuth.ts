@@ -1,6 +1,6 @@
 "use client"
 
-import { useSession } from "next-auth/react"
+import { signOut, useSession } from "next-auth/react"
 import { config } from "process"
 import { useEffect } from "react"
 import { axiosAuth } from "../axiosConfig"
@@ -29,7 +29,7 @@ const useAxiosAuth = () => {
           await refreshToken()
           prevRequest.headers.Authorization = `Bearer ${session?.tokens.accessToken}`
           return axiosAuth(prevRequest)
-      }
+        }
       return Promise.reject(error)
       })
       

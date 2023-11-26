@@ -1,4 +1,3 @@
-import { headers } from "next/dist/client/components/headers";
 import getSession from "./getSession";
 import api from "@/app/api/axiosConfig";
 

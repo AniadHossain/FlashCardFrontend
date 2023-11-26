@@ -2,18 +2,15 @@
 
 
 import useRoutes from "@/app/hooks/useRoutes";
-import MobileItem from "./MobileItem";
+import SidebarItem from "./SidebarItem";
 
-const MobileFooter = () => {
+const Container = () => {
   const routes = useRoutes();
 
   return ( 
     <div 
       className="
-        fixed 
-        justify-between 
         w-full 
-        top-0
         z-40 
         flex 
         items-center 
@@ -23,7 +20,7 @@ const MobileFooter = () => {
       "
     >
       {routes.map((route) => (
-        <MobileItem 
+        <SidebarItem
           key={route.href} 
           href={route.href} 
           active={route.active} 
@@ -35,4 +32,4 @@ const MobileFooter = () => {
    );
 }
  
-export default MobileFooter;
+export default Container;

@@ -17,17 +17,17 @@ const DeckList : React.FC<DeckListProps>= ({items}) => {
   
   
   return (
-    <aside className = "fixed inset-y-0 pb-20 overflow-y-auto border-r border-gray-200 block w-full left-0">
+    <aside>
       <div className="px-5">
-        <div className="flex-col mt-10">
+        <div className="flex-col">
           <div className= "flex">
-            <div className="text-2xl font-bold text-slate-400 py-4 mt-10">
+            <button className="text-2xl font-bold text-slate-400 py-4">
               Decks
-            </div>
+            </button>
             <div className="flex-grow"></div>
-            <div className="text-s font-bold text-slate-400 bg-blue-900 p-3 hover:bg-blue-700 rounded-lg cursor-pointer mt-10" onClick={handleClick}>
+            <button className="text-s h-10 mt-3 mr-1 font-bold text-slate-400 bg-blue-900  hover:bg-blue-700 rounded-lg cursor-pointer" onClick={handleClick}>
               Create Deck
-            </div>
+            </button>
           </div>  
         </div>
         {items.map((item) => (

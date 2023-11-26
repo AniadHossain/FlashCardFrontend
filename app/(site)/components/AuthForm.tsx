@@ -5,11 +5,9 @@ import InputField from "@/app/components/inputs/InputField";
 import { use, useCallback, useEffect, useState } from "react";
 import { FieldValues, SubmitHandler, useForm } from "react-hook-form"; 
 import api from "@/app/api/axiosConfig";
-import { convertToObject } from "typescript";
 import {toast} from "react-hot-toast"
 import {signIn, useSession} from "next-auth/react"
 import { useRouter } from "next/navigation";
-import getCurrentUser from "@/app/actions/getCurrentUser";
 
 
 type Variant = 'LOGIN' | 'REGISTER'
@@ -60,14 +58,12 @@ const AuthForm = () => {
                     router.push('/decks');
                     toast.success('Logged in');
                 }
+                else if(response?.status === 401){
+                    toast.error("Invalid credentials")
+                }
             })
             .catch((error) => {
-                if (error.status === 409) {
-                    console.log(error);
-                    toast.error('Invalid credentials');
-                } else {
-                    toast.error('Something went wrong');
-                }
+                console.log(error)
             })
             .finally(() => setLoading(false));
     };
@@ -89,9 +85,13 @@ const AuthForm = () => {
             })
             .catch((error) => {
                 console.log(error);
-                if (error.status === 409) {
-                    toast.error('Email already exists');
-                } else {
+                if (error.response.status === 409) {
+                    toast.error(error.response.data.message);
+                } 
+                else if(error.response.status === 400){
+                    toast.error(error.response.data.message)
+                }
+                else {
                     toast.error('Somthing went wrong');
                 }
             })
@@ -121,7 +121,7 @@ const AuthForm = () => {
                         <InputField id="lastName" label='Last Name' register={register} errors={errors} disabled={isLoading} />
                     </>
                 )}
-                <InputField id="email" label="Email" register={register} errors={errors} disabled={isLoading} type="email" pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" />
+                <InputField id="email" label="Email" register={register} errors={errors} disabled={isLoading} type="email" />
                 <InputField id="password" label='Password' register={register} errors={errors} disabled={isLoading} type="password"/>
                 <div>
                     <Button disabled={isLoading} fullWidth type="submit"> {variant === "LOGIN" ? "Sign in" : "Register"} </Button>

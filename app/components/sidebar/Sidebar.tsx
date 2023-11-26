@@ -1,16 +1,16 @@
-import getCurrentUser from "@/app/actions/getCurrentUser";
-import DesktopSidebar from "./DesktopSidebar";
-import MobileFooter from "./MobileFooter";
+import Container from "./SidebarContainer";
 
 async function Sidebar({children}: {children:React.ReactNode}) {
-    const currentUser = await getCurrentUser();
     
     return(
-        <div className="h-full bg-gray-900">
-            <MobileFooter/>
-            <main className="h-full">
+        <div className="flex flex-col bg-gray-900 min-h-screen gap-5">
+            <div>
+                <Container/>
+            </div>     
+            <main className="">
                 {children}
             </main>
+            
         </div>
         )
 }
