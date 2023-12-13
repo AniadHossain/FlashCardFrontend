@@ -1,14 +1,14 @@
 import axios from "axios";
 
 export default axios.create({
-    baseURL:"http://localhost:8080",
+    baseURL:"http://35.178.153.32",
     headers:{
         "Content-type":"application/json"
     }
 })
 
 export const axiosAuth = axios.create({
-    baseURL:"http://localhost:8080",
+    baseURL:"http://35.178.153.32",
     headers:{
         "Content-type":"application/json"
     }
